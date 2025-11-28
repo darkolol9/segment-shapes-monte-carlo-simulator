@@ -11,7 +11,7 @@ const canvas = document.querySelector("#app");
 
 // Legend element
 const segmentLength = 1;
-const maxSegments = 4;
+const maxSegments = 20;
 const color = 0x7CFC00;
 let numOfConfigurations = 1;
 let numOfCircles = 0;
@@ -65,10 +65,9 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // Example object
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshNormalMaterial();
-const cube = new THREE.Mesh(geometry, material);
 
 
-const axis = new AxisGrid(10, 1, 0x444444);
+const axis = new AxisGrid(maxSegments, 1, 0x444444);
 
 const segmentControl = new SegmentController(segmentLength, color, maxSegments);
 scene.add(segmentControl);
@@ -87,14 +86,16 @@ window.addEventListener("resize", () => {
 
 const handleRandomSegments = () => {
   setInterval(() => {
-    segmentControl.addSegment();
+    for (let i = 0; i < maxSegments;i++) {
+      segmentControl.addSegment();
+    }
 
     numOfConfigurations = segmentControl.numOfConfigurations;
     numOfCircles = segmentControl.numOfCircles;
 
     updateLegend();
 
-  }, )
+  }, 0 )
 }
 
 
@@ -102,10 +103,6 @@ handleRandomSegments()
 
 // Animation loop
 const tick = () => {
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
-
 
 
   renderer.render(scene, camera);
