@@ -74,7 +74,7 @@ scene.add(segmentControl);
 
 
 // scene.add(cube);
-scene.add(axis);
+// scene.add(axis);
 
 // Resize handling
 window.addEventListener("resize", () => {

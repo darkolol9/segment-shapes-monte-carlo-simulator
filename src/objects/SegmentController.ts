@@ -10,89 +10,112 @@ export class SegmentController extends THREE.Group {
   private prevSegmentEnd: THREE.Vector3 | null = null;
   private prevDirection: Direction | null = null;
 
-  private lineSegments: THREE.LineSegments;
-  private positions: Float32Array;
-  private positionIndex = 0;
+  private currentSegments: THREE.Line[] = [];   // active run
+  private lastCircleGroup: THREE.Group | null = null; // persistent circle (pink)
 
   public numOfSegments = 0;
   public numOfConfigurations = 0;
   public numOfCircles = 0;
 
-  constructor(segmentLength = 1, color = 0xff0000, maxSegments = 100) {
+  constructor(segmentLength = 1, color = 0x00ff00, maxSegments = 100) {
     super();
-
     this.segmentLength = segmentLength;
     this.color = color;
     this.maxSegments = maxSegments;
+  }
 
-    // Preallocate buffer: 2 points per segment, 3 coords per point
-    this.positions = new Float32Array(maxSegments * 2 * 3);
+  private makeLine(start: THREE.Vector3, end: THREE.Vector3, color: number) {
+    const mat = new THREE.LineBasicMaterial({ color });
+    const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
+    return new THREE.Line(geo, mat);
+  }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(this.positions, 3));
+  private clearCurrentSegments() {
+    for (const line of this.currentSegments) {
+      line.geometry.dispose();
+      (line.material as THREE.Material).dispose();
+      this.remove(line);
+    }
+    this.currentSegments = [];
+  }
 
-    const material = new THREE.LineBasicMaterial({ color: this.color });
-    this.lineSegments = new THREE.LineSegments(geometry, material);
-    this.add(this.lineSegments);
+  private saveLastCircle() {
+    // remove previous saved circle
+    if (this.lastCircleGroup) {
+      this.lastCircleGroup.children.forEach(c => {
+        (c as any).geometry.dispose();
+        (c as any).material.dispose();
+      });
+      this.remove(this.lastCircleGroup);
+    }
+
+    // create new pink group
+    const group = new THREE.Group();
+
+    for (const segment of this.currentSegments) {
+      const start = (segment.geometry.attributes.position as any).array.slice(0, 3);
+      const end = (segment.geometry.attributes.position as any).array.slice(3, 6);
+
+      const s = new THREE.Vector3(start[0], start[1], start[2]);
+      const e = new THREE.Vector3(end[0], end[1], end[2]);
+
+      const pinkLine = this.makeLine(s, e, 0xff00aa); // PINK
+      group.add(pinkLine);
+    }
+
+    this.lastCircleGroup = group;
+    this.add(group);
+  }
+
+  private resetRun() {
+    this.prevSegmentEnd = null;
+    this.prevDirection = null;
+    this.numOfSegments = 0;
+    this.clearCurrentSegments();
   }
 
   addSegment() {
     if (this.numOfSegments >= this.maxSegments) {
-      // Completed one configuration
-      this.numOfConfigurations += 1;
+      this.numOfConfigurations++;
 
       const end = this.prevSegmentEnd ?? new THREE.Vector3();
+
+      // 👉 Circle detected
       if (end.x === 0 && end.y === 0 && end.z === 0) {
-        this.numOfCircles += 1;
+        this.numOfCircles++;
+        this.saveLastCircle(); // store FULL circle in pink
       }
 
-      // Reset for next configuration
-      this.numOfSegments = 0;
-      this.positionIndex = 0;
-      this.prevSegmentEnd = null;
-      this.prevDirection = null;
+      this.resetRun();
+      return;
     }
 
-    this.numOfSegments += 1;
+    this.numOfSegments++;
 
     const start = this.prevSegmentEnd ? this.prevSegmentEnd.clone() : new THREE.Vector3();
 
-    // Determine direction
     let direction: Direction;
     if (!this.prevDirection) {
-      const options: Direction[] = ["x", "z"];
-      direction = options[Math.floor(Math.random() * options.length)];
+      direction = ["x", "z"][Math.floor(Math.random() * 2)];
     } else {
-      const orthogonalAxes: Direction[] = ["x", "y", "z"].filter(d => d !== this.prevDirection);
-      const choices = [this.prevDirection, ...orthogonalAxes];
-      direction = choices[Math.floor(Math.random() * choices.length)];
+      const ortho = ["x", "y", "z"].filter(d => d !== this.prevDirection);
+      direction = [this.prevDirection, ...ortho][Math.floor(Math.random() * 4)];
     }
 
-    // Determine end point
     const end = start.clone();
     const delta = this.segmentLength;
 
     if (direction === this.prevDirection) {
-      end[direction] += delta; // forward only
+      end[direction] += delta;
     } else {
-      end[direction] += Math.random() < 0.5 ? delta : -delta; // orthogonal
+      end[direction] += Math.random() < 0.5 ? delta : -delta;
     }
 
-    // Write positions to buffer
-    const idx = this.positionIndex * 6; // 2 points * 3 coords
-    this.positions[idx] = start.x;
-    this.positions[idx + 1] = start.y;
-    this.positions[idx + 2] = start.z;
-    this.positions[idx + 3] = end.x;
-    this.positions[idx + 4] = end.y;
-    this.positions[idx + 5] = end.z;
+    // create visible line (GREEN)
+    const line = this.makeLine(start, end, this.color);
+    this.currentSegments.push(line);
+    this.add(line);
 
-    this.positionIndex += 1;
-
-    // Notify Three.js that positions changed
-    (this.lineSegments.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
-
-    // Update tip and direction
     this.prevSegmentEnd = end.clone();
     this.prevDirection = direction;
   }
