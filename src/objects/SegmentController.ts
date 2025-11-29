@@ -16,6 +16,7 @@ export class SegmentController extends THREE.Group {
 
   private visitedPoints = new Set<string>();
   private visitedEdges = new Set<string>();
+  private iterations = 0;
 
   public numOfSegments = 0;
   public numOfConfigurations = 0;
@@ -110,6 +111,7 @@ export class SegmentController extends THREE.Group {
     this.prevSegmentEnd = null;
     this.prevDirection = null;
     this.numOfSegments = 0;
+    this.iterations = 0;
     this.visitedPoints.clear();
     this.visitedEdges.clear();
     this.clearCurrentSegments();
@@ -124,6 +126,11 @@ export class SegmentController extends THREE.Group {
   }
 
   addSegment() {
+    if (this.iterations > this.maxSegments * 2) {
+      this.resetRun();
+      return;
+    }
+
     if (this.numOfSegments >= this.maxSegments) {
       this.numOfConfigurations++;
 
@@ -136,7 +143,7 @@ export class SegmentController extends THREE.Group {
         !this.hasSelfIntersection()
       );
 
-      if (isSimpleCircle) {
+      if (isSimpleCircle && this.numOfSegments === this.maxSegments) {
         this.numOfCircles++;
         this.saveLastCircle();
       }
@@ -145,8 +152,8 @@ export class SegmentController extends THREE.Group {
       return;
     }
 
-    this.numOfSegments++;
 
+    this.iterations++;
     const start = this.prevSegmentEnd ? this.prevSegmentEnd.clone() : new THREE.Vector3();
 
     // Direction choice
@@ -171,7 +178,7 @@ export class SegmentController extends THREE.Group {
     const endKey = this.pointKey(end);
     if (this.visitedPoints.has(endKey) && !(end.x === 0 && end.y === 0 && end.z === 0)) {
       // Self-intersecting → abort configuration
-      this.resetRun();
+      // this.resetRun();
       return;
     }
 
@@ -180,9 +187,10 @@ export class SegmentController extends THREE.Group {
     const e2 = this.edgeKey(end, start);
     if (this.visitedEdges.has(e1) || this.visitedEdges.has(e2)) {
       // Edge reuse → not simple
-      this.resetRun();
+      // this.resetRun();
       return;
     }
+    this.numOfSegments++;
 
     // Store visited
     this.visitedPoints.add(this.pointKey(start));

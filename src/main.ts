@@ -11,7 +11,7 @@ const canvas = document.querySelector("#app") as HTMLElement;
 
 // Legend element
 const segmentLength = 1;
-const maxSegments = 10;
+const maxSegments = 100;
 const color = 0x7CFC00;
 let numOfConfigurations = 1;
 let numOfCircles = 0;
@@ -30,6 +30,9 @@ const updateLegend = () => {
   <p><strong>Ratio</strong> ${((numOfCircles / numOfConfigurations) * 100).toFixed(9)}%</p>
 `;
 }
+
+
+let functionCalls = 0;
 
 updateLegend();
 // Scene
@@ -76,7 +79,7 @@ window.addEventListener("resize", () => {
 
 const handleRandomSegments = () => {
   setInterval(() => {
-    for (let i = 0; i < maxSegments * 100;i++) {
+    for (let i = 0; i < 1000;i++) {
       segmentControl.addSegment();
     }
 
@@ -85,7 +88,7 @@ const handleRandomSegments = () => {
 
     updateLegend();
 
-  }, 10 )
+  }, 0 )
 }
 
 
