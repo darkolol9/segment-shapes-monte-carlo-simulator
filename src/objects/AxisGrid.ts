@@ -28,7 +28,7 @@ export class AxisGrid extends THREE.Group {
 
 
     const center = new THREE.Mesh(
-      new THREE.SphereGeometry(0.1, 32, 32),
+      new THREE.SphereGeometry(0.05, 32, 32),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     )
 

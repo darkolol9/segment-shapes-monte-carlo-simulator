@@ -43,6 +43,8 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.z = 3;
+camera.position.x = -10;
+camera.position.y = 3;
 scene.add(camera);
 
 // Renderer
@@ -74,7 +76,7 @@ window.addEventListener("resize", () => {
 
 const handleRandomSegments = () => {
   setInterval(() => {
-    for (let i = 0; i < maxSegments * 5;i++) {
+    for (let i = 0; i < maxSegments * 100;i++) {
       segmentControl.addSegment();
     }
 
@@ -83,14 +85,22 @@ const handleRandomSegments = () => {
 
     updateLegend();
 
-  }, 0 )
+  }, 10 )
 }
 
 
 handleRandomSegments()
 
+
+const rotationSpeed = 0.005
+
 // Animation loop
 const tick = () => {
+
+
+  segmentControl.rotation.y += rotationSpeed;
+  axis.rotation.y += rotationSpeed;
+
 
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
