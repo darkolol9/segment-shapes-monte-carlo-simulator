@@ -2,17 +2,6 @@ body {
   margin: 0;
   overflow: hidden;
   background: #000;
-}
-
-canvas {
-  display: block;
-}
-
-
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #000;
   font-family: sans-serif;
   color: #fff;
   position: relative;
@@ -25,15 +14,76 @@ canvas {
 
 #legend {
   position: absolute;
-  top: 10px;
+  top: 70px; /* moved down so slider is above it */
   left: 10px;
   padding: 10px 15px;
   border-radius: 8px;
-  border: 1px solid green;
+  /* border: 1px solid green; */
   color: green;
   font-family: sans-serif;
   font-size: 14px;
   max-width: 300px;
   z-index: 10;
+}
+
+/* ─────────────────────────
+   Slider wrapper 
+   (same style as legend)
+   ───────────────────────── */
+#slider-container {
+  color: green;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 8px 12px;
+  border: 1px solid green;
+  border-radius: 8px;
+  color: green;
+  font-size: 14px;
+  z-index: 11;
+  max-width: 310px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* ─────────────────────────
+   Range slider styling
+   ───────────────────────── */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 250px;
+  height: 4px;
+  background: #222;
+  border-radius: 4px;
+  outline: none;
+  margin: 5px 0;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: green;
+  border-radius: 4px;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #00ff00;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
+  margin-top: -5px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #00ff00;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  cursor: pointer;
 }
 

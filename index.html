@@ -7,9 +7,27 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <canvas id="app"></canvas>
-    <div id="legend">
+
+    <!-- Slider UI -->
+    <div style="padding: 10px; color: green; font-family: sans-serif;">
+      <label for="segmentsSlider"><strong>Number of segments (n):</strong></label>
+      <input
+        type="range"
+        id="segmentsSlider"
+        min="1"
+        max="100"
+        value="22"
+        style="width: 300px; vertical-align: middle;"
+      />
+      <span id="segmentsValue">22</span>
     </div>
+
+    <!-- Canvas -->
+    <canvas id="app"></canvas>
+
+    <!-- Legend -->
+    <div id="legend"></div>
+
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

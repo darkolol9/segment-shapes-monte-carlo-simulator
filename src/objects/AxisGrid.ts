@@ -36,7 +36,42 @@ export class AxisGrid extends THREE.Group {
     center.position.y = 0;
     center.position.z = 0;
 
-    this.add(gridXZ,  center);
+    this.add(gridXZ, center);
+  }
+
+  public setSegments(n: number) {
+    // Remove all existing children (grids)
+    this.clear();
+
+    const material = new THREE.LineBasicMaterial({ color: 0x444444 });
+
+    // XZ Plane
+    const gridXZ = new THREE.LineSegments(
+      new THREE.GridHelper(n, n).geometry,
+      material
+    );
+
+    // XY Plane
+    const gridXY = new THREE.LineSegments(
+      new THREE.GridHelper(n, n).geometry,
+      material
+    );
+    gridXY.rotation.x = Math.PI / 2;
+
+    // YZ Plane
+    const gridYZ = new THREE.LineSegments(
+      new THREE.GridHelper(n, n).geometry,
+      material
+    );
+    gridYZ.rotation.z = Math.PI / 2;
+
+    // Center sphere
+    const center = new THREE.Mesh(
+      new THREE.SphereGeometry(0.05, 32, 32),
+      new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    );
+
+    this.add(gridXZ, gridXY, gridYZ, center);
   }
 }
 

@@ -35,6 +35,12 @@ export class SegmentController extends THREE.Group {
     return new THREE.Line(geo, mat);
   }
 
+  public setMaxSegments(n: number) {
+    this.maxSegments = n;
+    this.resetRun();
+    this.numOfConfigurations = 1;
+    this.numOfCircles = 0;
+  }
 
   private makeThickLine(start: THREE.Vector3, end: THREE.Vector3, color: number, width = 4) {
     const group = new THREE.Group();
