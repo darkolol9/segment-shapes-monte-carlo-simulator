@@ -11,7 +11,7 @@ const canvas = document.querySelector("#app") as HTMLElement;
 
 // Legend element
 const segmentLength = 1;
-const maxSegments = 100;
+const maxSegments = 22;
 const color = 0x7CFC00;
 let numOfConfigurations = 1;
 let numOfCircles = 0;
@@ -19,6 +19,8 @@ let numOfCircles = 0;
 
 const updateLegend = () => {
   const legend = document.getElementById("legend")!;
+  const ratio = (numOfCircles / numOfConfigurations)
+  const estimatedValidConfigs = (ratio * Math.pow(3, maxSegments))
 
   // Inject program values
   legend.innerHTML = `
@@ -28,6 +30,7 @@ const updateLegend = () => {
   <p><strong>Configurations drawn:</strong> ${numOfConfigurations}</p>
   <p><strong>Circles detected</strong> ${numOfCircles}</p>
   <p><strong>Ratio</strong> ${((numOfCircles / numOfConfigurations) * 100).toFixed(9)}%</p>
+  <p><strong>Estimated Number of valid configs (for n segments)</strong> ${estimatedValidConfigs.toLocaleString("en-US")}</p>
 `;
 }
 
