@@ -112,10 +112,10 @@ export class SegmentController extends THREE.Group {
     // Direction choice
     let direction: Direction;
     if (!this.prevDirection) {
-      direction = ["x", "z"][Math.floor(Math.random() * 2)];
+      direction = ["x", "z"][Math.floor(Math.random() * 2)] as Direction;
     } else {
       const orth = ["x", "y", "z"].filter(d => d !== this.prevDirection);
-      direction = [this.prevDirection, ...orth][Math.floor(Math.random() * 4)];
+      direction = [this.prevDirection, ...orth][Math.floor(Math.random() * 4)] as Direction;
     }
 
     const end = start.clone();
