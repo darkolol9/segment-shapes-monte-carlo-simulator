@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Line2, LineGeometry, LineMaterial } from "three/examples/jsm/Addons.js";
 
 type Direction = "x" | "y" | "z";
 
@@ -33,6 +34,44 @@ export class SegmentController extends THREE.Group {
     return new THREE.Line(geo, mat);
   }
 
+
+  private makeThickLine(start: THREE.Vector3, end: THREE.Vector3, color: number, width = 4) {
+    const group = new THREE.Group();
+
+    // --- Line ---
+    const geometry = new LineGeometry();
+    geometry.setPositions([
+      start.x, start.y, start.z,
+      end.x, end.y, end.z
+    ]);
+
+    const material = new LineMaterial({
+      color,
+      linewidth: width,
+    });
+
+    material.resolution.set(window.innerWidth, window.innerHeight);
+
+    const line = new Line2(geometry, material);
+    group.add(line);
+
+    // --- End spheres ---
+    const sphereGeo = new THREE.SphereGeometry(width * 0.017); // adjust size as needed
+    const sphereMat = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // yellow
+
+    const sphereStart = new THREE.Mesh(sphereGeo, sphereMat);
+    sphereStart.position.copy(start);
+    group.add(sphereStart);
+
+    const sphereEnd = new THREE.Mesh(sphereGeo, sphereMat);
+    sphereEnd.position.copy(end);
+    group.add(sphereEnd);
+
+    return group;
+  }
+
+
+
   private clearCurrentSegments() {
     for (const seg of this.currentSegments) {
       seg.geometry.dispose();
@@ -45,8 +84,8 @@ export class SegmentController extends THREE.Group {
   private saveLastCircle() {
     if (this.lastCircleGroup) {
       this.lastCircleGroup.children.forEach(obj => {
-        (obj as any).geometry.dispose();
-        (obj as any).material.dispose();
+        (obj as any).geometry?.dispose();
+        (obj as any).material?.dispose();
       });
       this.remove(this.lastCircleGroup);
     }
@@ -58,7 +97,8 @@ export class SegmentController extends THREE.Group {
       const s = new THREE.Vector3(p[0], p[1], p[2]);
       const e = new THREE.Vector3(p[3], p[4], p[5]);
 
-      const pink = this.makeLine(s, e, 0xff00aa);
+      // const pink = this.makeLine(s, e, 0xff00aa);
+      const pink = this.makeThickLine(s, e, 0xff00aa, 6);
       group.add(pink);
     }
 
