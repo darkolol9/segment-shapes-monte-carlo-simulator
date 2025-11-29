@@ -36,7 +36,7 @@ export class AxisGrid extends THREE.Group {
     center.position.y = 0;
     center.position.z = 0;
 
-    this.add(gridXZ, gridXY, gridYZ, center);
+    this.add(gridXZ,  center);
   }
 }
 
