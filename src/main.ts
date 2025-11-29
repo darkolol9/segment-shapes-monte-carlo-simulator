@@ -6,7 +6,7 @@ import { AxisGrid } from "./objects/AxisGrid";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { SegmentController } from "./objects/SegmentController";
 // Canvas
-const canvas = document.querySelector("#app");
+const canvas = document.querySelector("#app") as HTMLElement;
 
 
 // Legend element
@@ -31,14 +31,7 @@ const updateLegend = () => {
 `;
 }
 
-
 updateLegend();
-const p = document.createElement("canvas");
-const gl = p.getContext("webgl");
-console.log("RENDERER:", gl.getParameter(gl.RENDERER));
-console.log("VENDOR:", gl.getParameter(gl.VENDOR));
-console.log("UNMASKED RENDERER:", gl.getExtension("WEBGL_debug_renderer_info")?.UNMASKED_RENDERER_WEBGL);
-console.log("UNMASKED VENDOR:", gl.getExtension("WEBGL_debug_renderer_info")?.UNMASKED_VENDOR_WEBGL);
 // Scene
 const scene = new THREE.Scene();
 
