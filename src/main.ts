@@ -28,9 +28,9 @@ const updateLegend = () => {
     <h3>Segment Controller</h3>
     <p>This visualizes connected segments in 3D.</p>
     <p><strong>(n):</strong> ${maxSegments}</p>
-    <p><strong>Configurations drawn:</strong> ${numOfConfigurations}</p>
-    <p><strong>Circles detected:</strong> ${numOfCircles}</p>
-    <p><strong>Ratio:</strong> ${(ratio * 100).toFixed(9)}%</p>
+    <p><strong>Configurations drawn:</strong> ${numOfConfigurations.toLocaleString("en-US")}</p>
+    <p><strong>Circles detected:</strong> ${numOfCircles.toLocaleString("en-US")}</p>
+    <p><strong>Ratio:</strong> ${(ratio * 100).toFixed(3)}%</p>
     <p><strong>Estimated valid configurations:</strong> ${estimatedValidConfigs.toLocaleString("en-US")}</p>
   `;
 };
